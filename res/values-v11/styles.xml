@@ -1,0 +1,6 @@
+<resources>
+	<style name="MenuTheme" parent="android:Theme.NoTitleBar" />
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">  </style>
+    <style name="LoadingDialogTheme" parent="android:Theme.Holo.Light" />
+
+</resources>

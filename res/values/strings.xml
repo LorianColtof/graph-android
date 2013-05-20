@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Graph</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="show_input">&lt; Show input</string>
+    <string name="title_activity_input_menu">InputMenuActivity</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="loading_format">Loading&#8230; (%1$d%%)</string>
+    <string name="parsing_functions">Parsing functions&#8230;</string>
+    <string name="parsing_functions_format">Parsing functions&#8230; (%1$d%%)</string>
+    <string name="title_activity_input">Function input</string>
+    <string name="input">Input</string>
+    <string name="input_caption">Function</string>
+	<string name="y_equals">YN = </string>
+	<string name="y_equals_format">Y%1$d = </string>
+</resources>
