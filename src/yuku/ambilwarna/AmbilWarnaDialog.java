@@ -133,7 +133,8 @@ public class AmbilWarnaDialog {
                 // move cursor & target on first draw
                 ViewTreeObserver vto = view.getViewTreeObserver();
                 vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override public void onGlobalLayout() {
+                        @SuppressWarnings("deprecation")
+						@Override public void onGlobalLayout() {
                                 moveCursor();
                                 moveTarget();
                                 view.getViewTreeObserver().removeGlobalOnLayoutListener(this);

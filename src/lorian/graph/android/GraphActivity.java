@@ -23,8 +23,8 @@ public class GraphActivity extends Activity {
 	private static ProgressDialog dialog;
 	public static final int MaxFunctions = 10;
 	public static String[] itemTexts = new String[MaxFunctions];
-	public static final Color[] functionColors = { new Color(37, 119, 255), new Color(224,0,0), new Color(211,0,224), new Color(0,158,224), new Color(0,255,90), new Color(221,224,0), new Color(224,84,0) };  
-	
+	public static final Color[] functionColors = { new Color(37, 119, 255), new Color(224,0,0), new Color(211,0,224), new Color(0,158,224), new Color(0,255,90), new Color(221,224,0), new Color(224,84,0),  new Color(37, 119, 255), new Color(224,0,0), new Color(211,0,224) };  
+	// NOTE: functionColors.length >= MaxFunctions!
 	private static Handler handler;
 	private boolean isReady = false;
 

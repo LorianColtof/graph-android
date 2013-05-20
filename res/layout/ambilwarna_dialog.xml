@@ -1,10 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ambilwarna_dialogView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center" >
 
-    <RelativeLayout
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/ambilwarna_viewContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,7 +7,7 @@
         android:paddingBottom="@dimen/ambilwarna_spacer"
         android:paddingLeft="@dimen/ambilwarna_spacer"
         android:paddingRight="@dimen/ambilwarna_spacer"
-        android:paddingTop="@dimen/ambilwarna_spacer" android:layout_gravity="center">
+        android:paddingTop="@dimen/ambilwarna_spacer" android:layout_gravity="center" >
 
         <yuku.ambilwarna.AmbilWarnaKotak
             android:id="@+id/ambilwarna_viewSatBri"
@@ -35,13 +30,6 @@
             android:layout_height="9dp"
             android:scaleType="matrix"
             android:src="@drawable/ambilwarna_cursor" />
-
-        <ImageView
-            android:id="@+id/ambilwarna_target"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:scaleType="matrix"
-            android:src="@drawable/ambilwarna_target" />
 
         <LinearLayout
             android:id="@+id/ambilwarna_state"
@@ -72,6 +60,15 @@
                 android:layout_height="30dp"
                 android:background="#aaf" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ambilwarna_target"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignLeft="@+id/ambilwarna_viewSatBri"
+            android:layout_alignTop="@+id/ambilwarna_viewSatBri"
+            android:scaleType="matrix"
+            android:src="@drawable/ambilwarna_target" />
+
     </RelativeLayout>
 
-</FrameLayout>

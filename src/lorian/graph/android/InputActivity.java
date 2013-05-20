@@ -12,10 +12,8 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -130,7 +128,7 @@ public class InputActivity extends Activity  {
 					label.setText(String.format(getResources().getString(R.string.y_equals_format), position+1) + "  ");
 				else
 					label.setText(String.format(getResources().getString(R.string.y_equals_format), position+1));
-				final int color = GraphActivity.functionColors[position % GraphActivity.functionColors.length].toAndroidRGB();
+				final int color = GraphActivity.functionColors[position].toAndroidRGB();
 				label.setBackgroundColor(color);
 				label.setOnTouchListener(new OnTouchListener() {
 					
@@ -150,10 +148,9 @@ public class InputActivity extends Activity  {
 				convertView.setTag(holder);
 						
 			}
-			else // Should not happen
+			else 
 			{
 				 holder = (ViewHolder) convertView.getTag();
-				 Log.e(GraphActivity.TAG, "convertView != null");
             }
 					holder.caption.setText(items.get(position).caption);
 				holder.caption.setId(position);
@@ -194,14 +191,14 @@ public class InputActivity extends Activity  {
 	
  		void showColorPicker(final int initialColor, final TextView label, final int index)
 		{
-			 
+			
 			AmbilWarnaDialog dialog = new AmbilWarnaDialog(InputActivity.this, initialColor, new OnAmbilWarnaListener() {
 				
 				@Override
 				public void onOk(AmbilWarnaDialog dialog, int color) {
 					label.setBackgroundColor(color);
 					GraphActivity.functionColors[index] = lorian.graph.android.opengl.Color.fromAndroidRGB(color);
-					GraphRenderer.notifyFunctionsChanged();
+					GraphRenderer.notifyFunctionColorsChanged();
 					colorPickerOn = false;
 				}
 				
@@ -212,7 +209,6 @@ public class InputActivity extends Activity  {
 			});
 			
 			dialog.show();
-			Log.d(GraphActivity.TAG, "Showing colorDialog");
 			colorPickerOn = true;
 		}
 		

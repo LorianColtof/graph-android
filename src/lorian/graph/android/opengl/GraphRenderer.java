@@ -23,8 +23,8 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 
 	private static final String TAG = GraphActivity.TAG;
 	
-	public List<Function> functions;
-	public List<FunctionDataArray> fdata;
+	public static List<Function> functions = new ArrayList<Function>();
+	public static List<FunctionDataArray> fdata = new ArrayList<FunctionDataArray>();
 	private WindowSettings settings;
 	private boolean auto_calc_ymin_ymax = true;
 	private boolean windowerror = false;
@@ -34,13 +34,13 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	
 	public boolean render_functions = false;
 	public boolean render_axes = false;
-	private static boolean functions_need_recalculation = false; 
+	private static boolean functions_need_recalculation = false;
 	public GraphRenderer(Context context)
 	{
 		super();	
 		this.context = context;
-		fdata = new ArrayList<FunctionDataArray>();
-		functions  = new ArrayList<Function>();
+		fdata.clear();
+		functions.clear();
 		
 	}
 	/*
@@ -443,7 +443,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	{
 		Log.d(TAG, "Surface changed! width = " + String.valueOf(width) + ", height = " + String.valueOf(height));
 		
-		if(this.width != width || this.height != height || functions_need_recalculation)
+		if(this.width != width || this.height != height || functions_need_recalculation )
 		{
 			GraphActivity.showLoadingDialog();
 			Log.d(TAG, "Updating data...");
@@ -485,7 +485,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
 		
 		
-		gl.glEnable(GL10.GL_LINE_SMOOTH);
+		//gl.glEnable(GL10.GL_LINE_SMOOTH);
 		gl.glEnable(GL10.GL_POINT_SMOOTH);
 		gl.glHint(GL10.GL_POINT_SMOOTH_HINT, GL10.GL_NICEST);
 		gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
@@ -510,6 +510,17 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	public static void notifyFunctionsChanged()
 	{
 		functions_need_recalculation = true;
+	}
+	public static void notifyFunctionColorsChanged()
+	{
+		if(functions_need_recalculation || functions.size() == 0 || fdata.size() == 0) return;
+		for(int i=0;i<fdata.size();i++)
+		{
+			Function f = functions.get(i);
+			FunctionDataArray fd = fdata.get(i);
+			f.setColor(GraphActivity.functionColors[i]);
+			fd.color = f.getColor();
+		}
 	}
 
 	
