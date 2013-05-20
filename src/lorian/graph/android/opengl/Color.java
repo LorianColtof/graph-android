@@ -16,7 +16,14 @@ public class Color {
 		this.setG(g / 255f);
 		this.setB(b / 255f); 
 	}
-	
+	public int toAndroidRGB()
+	{
+		return android.graphics.Color.rgb((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
+	}
+	public static Color fromAndroidRGB(int color)
+	{
+		return new Color((color >> 16) & 0xFF , (color >> 8) & 0xFF, color & 0xFF);
+	}
 	public float getR() {
 		return r;
 	}

@@ -394,7 +394,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 				}
 				else
 				{
-					Color c = GraphActivity.defaultColors[i];
+					Color c = GraphActivity.functionColors[i];
 					f.setColor(c);
 					//f.setDraw(getIfSomethingIsChecked);
 					functions.add(f);

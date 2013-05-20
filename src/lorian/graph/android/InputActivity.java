@@ -3,25 +3,33 @@ package lorian.graph.android;
 import java.util.ArrayList;
 import java.util.List;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
+
 import lorian.graph.android.opengl.GraphRenderer;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
-public class InputActivity extends Activity {
+public class InputActivity extends Activity  {
 
 	private ListView list;
 	private InputAdapter inputAdapter;
@@ -75,12 +83,12 @@ public class InputActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	class InputAdapter extends BaseAdapter
+	class InputAdapter extends BaseAdapter 
 	{
 
 		private LayoutInflater inflater;
 		public List<ListItem> items = new ArrayList<ListItem>();
-			
+		private boolean colorPickerOn = false;
 		public InputAdapter()
 		{
 			inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -100,7 +108,6 @@ public class InputActivity extends Activity {
 		
 		@Override
 		public Object getItem(int position) {
-			//return (Object) items.get(position);
 			return position;
 		}
 
@@ -118,13 +125,37 @@ public class InputActivity extends Activity {
 				holder = new ViewHolder();
 				convertView = inflater.inflate(R.layout.input_item, null);
 				holder.caption = (EditText) convertView.findViewById(R.id.input_item_caption);
+		 		final TextView label = (TextView) convertView.findViewById(R.id.input_item_label);
+				if(position+1 < 10)
+					label.setText(String.format(getResources().getString(R.string.y_equals_format), position+1) + "  ");
+				else
+					label.setText(String.format(getResources().getString(R.string.y_equals_format), position+1));
+				final int color = GraphActivity.functionColors[position % GraphActivity.functionColors.length].toAndroidRGB();
+				label.setBackgroundColor(color);
+				label.setOnTouchListener(new OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if(!colorPickerOn)
+						{
+							showColorPicker(color, label, position);
+							return true;
+						}
+						else
+							return false;
+						
+					}
+				});
+				
 				convertView.setTag(holder);
+						
 			}
-			else
+			else // Should not happen
 			{
 				 holder = (ViewHolder) convertView.getTag();
+				 Log.e(GraphActivity.TAG, "convertView != null");
             }
-				holder.caption.setText(items.get(position).caption);
+					holder.caption.setText(items.get(position).caption);
 				holder.caption.setId(position);
 				 
 	            //we need to update adapter once we finish with editing
@@ -161,7 +192,29 @@ public class InputActivity extends Activity {
 	            return convertView;
 		}
 	
-	
+ 		void showColorPicker(final int initialColor, final TextView label, final int index)
+		{
+			 
+			AmbilWarnaDialog dialog = new AmbilWarnaDialog(InputActivity.this, initialColor, new OnAmbilWarnaListener() {
+				
+				@Override
+				public void onOk(AmbilWarnaDialog dialog, int color) {
+					label.setBackgroundColor(color);
+					GraphActivity.functionColors[index] = lorian.graph.android.opengl.Color.fromAndroidRGB(color);
+					GraphRenderer.notifyFunctionsChanged();
+					colorPickerOn = false;
+				}
+				
+				@Override
+				public void onCancel(AmbilWarnaDialog dialog) {
+					colorPickerOn = false;
+				}
+			});
+			
+			dialog.show();
+			Log.d(GraphActivity.TAG, "Showing colorDialog");
+			colorPickerOn = true;
+		}
 		
 	}
 	  class ViewHolder {
@@ -171,5 +224,7 @@ public class InputActivity extends Activity {
 	    class ListItem {
 	        String caption;
 	    }
+
+	
 }
 
