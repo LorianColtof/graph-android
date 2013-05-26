@@ -1,9 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/input"
+        android:id="@+id/menu_input"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/input"/>
+    <item
+        android:id="@+id/menu_windowsettings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/windowsettings"/>
 
 </menu>

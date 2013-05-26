@@ -11,12 +11,15 @@ import lorian.graph.android.FunctionDataArray;
 import lorian.graph.android.GraphActivity;
 import lorian.graph.android.R;
 import lorian.graph.android.Util;
+import lorian.graph.android.WindowSettingsActivity;
 import lorian.graph.function.Calculate;
 import lorian.graph.function.Function;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class GraphRenderer implements GLSurfaceView.Renderer {
@@ -25,16 +28,19 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	
 	public static List<Function> functions = new ArrayList<Function>();
 	public static List<FunctionDataArray> fdata = new ArrayList<FunctionDataArray>();
-	private WindowSettings settings;
-	private boolean auto_calc_ymin_ymax = true;
+	//private WindowSettings WindowSettingsActivity.windowsettings;
+	public static boolean auto_calc_ymin_ymax = true;
 	private boolean windowerror = false;
 	private int YaxisX, XaxisY;
-	private int width, height;
-	private Context context;
+	private static int width;
+
+	private static int height; 
+	private static Context context; 
 	
 	public boolean render_functions = false;
 	public boolean render_axes = false;
 	private static boolean functions_need_recalculation = false;
+	private static boolean windowsettings_need_recalculation = false;
 	public GraphRenderer(Context context)
 	{
 		super();	
@@ -97,7 +103,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	public void calculateFunction(Function f, boolean fill) 
 	{
 		if(f.isEmpty()) return;
-		if(settings == null) 
+		if(WindowSettingsActivity.windowsettings == null) 
 		{
 			Log.e(TAG, "settings == null!"); 
 			return;
@@ -109,7 +115,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		int xpix, ypix;
 		boolean inNaN = false;
 		double x,y;
-		double step = ((double) (settings.getXmax() - settings.getXmin())) / width;
+		double step = ((double) (WindowSettingsActivity.windowsettings.getXmax() - WindowSettingsActivity.windowsettings.getXmin())) / width;
 		
 		Point previous = new Point();
 		boolean WaitForRealNumber = false;
@@ -117,7 +123,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		
 		int i=0;
 		
-		for(xpix = -1, x = settings.getXmin(); xpix < (int) width; xpix++, x+=step)
+		for(xpix = -1, x = WindowSettingsActivity.windowsettings.getXmin(); xpix < (int) width; xpix++, x+=step)
 		{
 			y = f.Calc(x);
 			if(Double.isNaN(y)) 
@@ -128,7 +134,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 				if(!Double.isNaN(tmpX))
 				{
 					double tmpY =  f.Calc(tmpX);
-					ypix = (int) ((settings.getYmax() - tmpY) * (height / (settings.getYmax() - settings.getYmin())));
+					ypix = (int) ((WindowSettingsActivity.windowsettings.getYmax() - tmpY) * (height / (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin())));
 					//drawPart(gl, previous.x, previous.y, xpix, ypix);
 					//float[] tmpdata = savePart(previous.x, previous.y, xpix, ypix);
 					/*
@@ -155,7 +161,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 					if(!Double.isNaN(tmpX))
 					{
 						double tmpY =  f.Calc(tmpX);
-						ypix = (int) ((settings.getYmax() - tmpY) * (height / (settings.getYmax() - settings.getYmin())));
+						ypix = (int) ((WindowSettingsActivity.windowsettings.getYmax() - tmpY) * (height / (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin())));
 						
 						//drawPoint(gl, xpix, ypix);
 						
@@ -173,7 +179,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 				
 			}
 			
-			ypix = (int) ((settings.getYmax() - y) * (height / (settings.getYmax() - settings.getYmin())));
+			ypix = (int) ((WindowSettingsActivity.windowsettings.getYmax() - y) * (height / (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin())));
 			if(xpix > -1)
 			{
 				if(previous == null)
@@ -232,10 +238,10 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		
 		int pix;
 		
-		for(long x=settings.getXmin()+1;x<settings.getXmax();x++)
+		for(long x=WindowSettingsActivity.windowsettings.getXmin()+1;x<WindowSettingsActivity.windowsettings.getXmax();x++)
 		{
 			if(x==0) continue;
-			pix = (int) ((x-settings.getXmin()) * (width / (settings.getXmax() - settings.getXmin())));
+			pix = (int) ((x-WindowSettingsActivity.windowsettings.getXmin()) * (width / (WindowSettingsActivity.windowsettings.getXmax() - WindowSettingsActivity.windowsettings.getXmin())));
 			if(pix==0) continue;
 		
 			buf = new float[] {pix, XaxisY-5, pix, XaxisY + 5};
@@ -243,10 +249,10 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 			gl.glDrawArrays(GL10.GL_LINES, 0, 2);
 			
 		}
-		for(long y=settings.getYmin()+1;y<settings.getYmax();y++)
+		for(long y=WindowSettingsActivity.windowsettings.getYmin()+1;y<WindowSettingsActivity.windowsettings.getYmax();y++)
 		{
 			if(y==0) continue;
-			pix = (int) height - (int) ((y-settings.getYmin()) * (height / (settings.getYmax() - settings.getYmin())));
+			pix = (int) height - (int) ((y-WindowSettingsActivity.windowsettings.getYmin()) * (height / (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin())));
 			if(pix==0) continue;
 
 			buf = new float[] {YaxisX - 5, pix, YaxisX + 5, pix};
@@ -260,19 +266,19 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		float[] buf;
 		int pix;
 		gl.glColor4f(0, 186f / 255f, 1.0f, 1.0f);
-		for(long x=settings.getXmin()+1;x<settings.getXmax();x++)
+		for(long x=WindowSettingsActivity.windowsettings.getXmin()+1;x<WindowSettingsActivity.windowsettings.getXmax();x++)
 		{
 			if(x==0) continue;
-			pix = (int) ((x-settings.getXmin()) * (width / (settings.getXmax() - settings.getXmin())));
+			pix = (int) ((x-WindowSettingsActivity.windowsettings.getXmin()) * (width / (WindowSettingsActivity.windowsettings.getXmax() - WindowSettingsActivity.windowsettings.getXmin())));
 			if(pix==0) continue;
 			buf = new float[] {pix, 0, pix, height};
 			gl.glVertexPointer(2, GL10.GL_FLOAT, 0, Util.toFloatBuffer(buf)); 
 			gl.glDrawArrays(GL10.GL_LINES, 0, 2);
 		}
-		for(long y=settings.getYmin()+1;y<settings.getYmax();y++)
+		for(long y=WindowSettingsActivity.windowsettings.getYmin()+1;y<WindowSettingsActivity.windowsettings.getYmax();y++)
 		{
 			if(y==0) continue;
-			pix = (int) height -  (int) ((y-settings.getYmin()) * (height/ (settings.getYmax() - settings.getYmin())));
+			pix = (int) height -  (int) ((y-WindowSettingsActivity.windowsettings.getYmin()) * (height/ (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin())));
 			if(pix==0) continue;
 			
 			buf = new float[] {0, pix, width, pix};
@@ -291,7 +297,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 		if(windowerror) return;
 
 		
-		if(render_axes && settings.gridOn())
+		if(render_axes && WindowSettingsActivity.windowsettings.gridOn())
 		{
 			Log.d(TAG, "Drawing grid...");
 			gl.glLineWidth(2.0f);
@@ -318,20 +324,18 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 
 
 	
-	public void recalculateWindowSettings()
+	public static void recalculateWindowSettings()
 	{
-		if(settings == null)
-		{
-			tmp_InitWindowSettings(-8, 8, true);
-			return;
-		}
-		
 		if(auto_calc_ymin_ymax)
 		{
-			long dy = (settings.getXmax() - settings.getXmin()) * height / width;
-			settings.setYmax(dy / 2);
-			settings.setYmin(-dy / 2);
-			
+			long dy = (WindowSettingsActivity.windowsettings.getXmax() - WindowSettingsActivity.windowsettings.getXmin()) * height / width;
+			WindowSettingsActivity.windowsettings.setYmax(dy / 2);
+			WindowSettingsActivity.windowsettings.setYmin(-dy / 2);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences.Editor edit = prefs.edit();
+			edit.putInt("window_settings_ymin", (int) (dy / -2));
+			edit.putInt("window_settings_ymax", (int) (dy / 2));
+			edit.apply();
 		}
 	}
 	public void recalculateFunctions(int filledTexts)
@@ -408,42 +412,20 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 			GraphActivity.changeLoadingDialogText(String.format(context.getResources().getString(R.string.parsing_functions_format), percent));
 		}
 	}
-	public void tmp_InitFunctions()
-	{
+	
 
-		functions.clear();
-		functions.add(new Function("x^2+3x+4").setColor(new Color(37, 119, 255)));
-		functions.add(new Function("x^3+sqrt(x)").setColor(new Color(255, 0, 0)));
-		functions.add(new Function("sqrt(x)").setColor(new Color(255, 119, 0)));
-		
-		//functions.add(new Function("2*sqrt(-abs(abs(x)-1)*abs(3-abs(x))/((abs(x)-1)*(3-abs(x))))(1+abs(abs(x)-3)/(abs(x)-3))sqrt(1-(x/7)^2)+(5+0.97(abs(x-.5)+abs(x+.5))-3(abs(x-.75)+abs(x+.75)))(1+abs(1-abs(x))/(1-abs(x)))").setColor(new Color(37, 119, 255)));
-		//functions.add(new Function("-3sqrt(1-(x/7)^2)sqrt(abs(abs(x)-4)/(abs(x)-4))").setColor(new Color(255, 0, 0)));
-		//functions.add(new Function("abs(x/2)-0.0913722(x^2)-3+sqrt(1-(abs(abs(x)-2)-1)^2)").setColor(new Color(0, 255, 90)));
-		//functions.add(new Function("").setColor(new Color(0, 255, 255)));
-	}
-	public void tmp_InitWindowSettings(long Xmin, long Xmax, boolean grid)
-	{
-		if(auto_calc_ymin_ymax)
-		{
-			long dy = (Xmax - Xmin) * height / width;
-			settings = new WindowSettings(Xmin, Xmax, -dy / 2, dy/2, grid);
-		}
-		else
-			settings = new WindowSettings(Xmin, Xmax, Xmin, Xmax, grid);
-	}
 	public void recalculateAxes()
 	{
-		YaxisX = (int) (width * ((double) - settings.getXmin()) / ((double) (settings.getXmax() - settings.getXmin()))) - 1;
-		XaxisY = (int) height - (int) (height * ((double) -settings.getYmin()) / ((double) (settings.getYmax() - settings.getYmin()))) - 1;
+		YaxisX = (int) (width * ((double) - WindowSettingsActivity.windowsettings.getXmin()) / ((double) (WindowSettingsActivity.windowsettings.getXmax() - WindowSettingsActivity.windowsettings.getXmin()))) - 1;
+		XaxisY = (int) height - (int) (height * ((double) -WindowSettingsActivity.windowsettings.getYmin()) / ((double) (WindowSettingsActivity.windowsettings.getYmax() - WindowSettingsActivity.windowsettings.getYmin()))) - 1;
 		windowerror = false;
 	}
 	
 	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height)
+	public void onSurfaceChanged(GL10 gl, int width, int height) 
 	{
 		Log.d(TAG, "Surface changed! width = " + String.valueOf(width) + ", height = " + String.valueOf(height));
-		
-		if(this.width != width || this.height != height || functions_need_recalculation )
+		if(this.width != width || this.height != height || functions_need_recalculation || windowsettings_need_recalculation)
 		{
 			GraphActivity.showLoadingDialog();
 			Log.d(TAG, "Updating data...");
@@ -461,12 +443,14 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 			}
 			if(filledTexts==0)filledTexts=1;
 		
-			
-			ParseFunctions(filledTexts);
 			recalculateWindowSettings();
 			recalculateAxes();
+
+			ParseFunctions(filledTexts);
+		
 			recalculateFunctions(filledTexts);
 			functions_need_recalculation = false;
+			windowsettings_need_recalculation = false;
 			GraphActivity.hideLoadingDialog();
 			
 		}
@@ -520,6 +504,18 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 			FunctionDataArray fd = fdata.get(i);
 			f.setColor(GraphActivity.functionColors[i]);
 			fd.color = f.getColor();
+		}
+	}
+	public static void notifyWindowSettingsChanged()
+	{
+		windowsettings_need_recalculation  = true;
+		try
+		{
+			GraphRenderer.recalculateWindowSettings();
+		}
+		catch(ArithmeticException e)
+		{
+			e.printStackTrace();
 		}
 	}
 

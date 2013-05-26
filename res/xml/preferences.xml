@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <PreferenceCategory
+        android:key="window_settings"
+        android:title="@string/windowsettings" >
+        <com.michaelnovakjr.numberpicker.NumberPickerPreference
+            android:key="window_settings_xmin"
+            android:title="@string/windowsettings_xmin"
+            app:defaultValue="-8" />
+        <com.michaelnovakjr.numberpicker.NumberPickerPreference
+            android:key="window_settings_xmax"
+            android:title="@string/windowsettings_xmax"
+            app:defaultValue="8" />
+        <com.michaelnovakjr.numberpicker.NumberPickerPreference
+            android:key="window_settings_ymin"
+            android:title="@string/windowsettings_ymin"
+            app:defaultValue="-8" />
+        <com.michaelnovakjr.numberpicker.NumberPickerPreference
+            android:key="window_settings_ymax"
+            android:title="@string/windowsettings_ymax"
+            app:defaultValue="8" />
+        <CheckBoxPreference 
+            android:key="window_settings_auto_calc_ymin_ymax"
+            android:title="@string/windowsettings_auto_calc_ymin_ymax"
+            android:defaultValue="true"
+            />
+        <CheckBoxPreference
+            android:key="window_settings_grid"
+            android:title="@string/windowsettings_grid"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

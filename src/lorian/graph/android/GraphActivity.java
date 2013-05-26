@@ -1,11 +1,14 @@
 package lorian.graph.android;
 
+import lorian.graph.WindowSettings;
 import lorian.graph.android.opengl.*;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +40,10 @@ public class GraphActivity extends Activity {
 		//setContentView(R.layout.activity_graph);
 		Log.d(TAG, "GraphActivity created"); 
 		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		WindowSettingsActivity.windowsettings = new WindowSettings(prefs.getInt("window_settings_xmin", -8), prefs.getInt("window_settings_xmax", 8), prefs.getInt("window_settings_ymin", -8), prefs.getInt("window_settings_ymax", 8), prefs.getBoolean("window_settings_grid", false));
+		GraphRenderer.auto_calc_ymin_ymax = prefs.getBoolean("window_settings_auto_calc_ymin_ymax", true);
+		
 		dialog = new ProgressDialog(GraphActivity.this, R.style.LoadingDialogTheme);
 		dialog.setMessage(getResources().getString(R.string.loading));
 		dialog.setCancelable(false);
@@ -47,7 +54,7 @@ public class GraphActivity extends Activity {
 		gSurfaceView.setRenderAxes(true);
 		gSurfaceView.setRenderFunctions(true);
 		
-		//TODO This is a temporary fix, since a onTouchListener will be used for other things.
+		//TODO This is a temporary fix, since an onTouchListener will be used for other things.
 		gSurfaceView.setOnTouchListener(new OnTouchListener() {
 			
 			// For devices without a menu button
@@ -59,6 +66,7 @@ public class GraphActivity extends Activity {
 		});
 		handler = new Handler();
 		
+	
 		isReady = true;
 	}
 	@Override
@@ -78,9 +86,13 @@ public class GraphActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	        case R.id.input:
+	        case R.id.menu_input:
 	          startActivity(new Intent(this, InputActivity.class));
 	            return true;
+	        case R.id.menu_windowsettings:
+	        	startActivity(new Intent(this, WindowSettingsActivity.class));
+		         
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
