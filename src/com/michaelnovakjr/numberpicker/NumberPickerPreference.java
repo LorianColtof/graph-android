@@ -1,11 +1,13 @@
 package com.michaelnovakjr.numberpicker;
 
+import lorian.graph.android.GraphActivity;
 import lorian.graph.android.R;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 
@@ -25,7 +27,7 @@ public class NumberPickerPreference extends DialogPreference {
         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.numberpicker);
         mStartRange = arr.getInteger(R.styleable.numberpicker_startRange, Integer.MIN_VALUE);
         mEndRange = arr.getInteger(R.styleable.numberpicker_endRange, Integer.MAX_VALUE);
-        mCurrentVal = PreferenceManager.getDefaultSharedPreferences(context).getInt(getKey(), 0);
+        mCurrentVal = PreferenceManager.getDefaultSharedPreferences(context).getInt(getKey(), arr.getInteger(R.styleable.numberpicker_defaultValue, 0)); 
         //arr.getInteger(R.styleable.numberpicker_defaultValue, 0);
        
         arr.recycle();

@@ -44,7 +44,7 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	public GraphRenderer(Context context)
 	{
 		super();	
-		this.context = context;
+		GraphRenderer.context = context;
 		fdata.clear();
 		functions.clear();
 		
@@ -333,8 +333,11 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 			WindowSettingsActivity.windowsettings.setYmin(-dy / 2);
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			SharedPreferences.Editor edit = prefs.edit();
-			edit.putInt("window_settings_ymin", (int) (dy / -2));
-			edit.putInt("window_settings_ymax", (int) (dy / 2));
+			// only apply if necessary to prevent a loop
+			if(prefs.getInt("window_settings_ymin", 1) != (int) (dy / - 2))
+				edit.putInt("window_settings_ymin", (int) (dy / -2));
+			if(prefs.getInt("window_settings_ymax", -1) != (int) (dy / 2))	
+				edit.putInt("window_settings_ymax", (int) (dy / 2));
 			edit.apply();
 		}
 	}
@@ -425,12 +428,12 @@ public class GraphRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) 
 	{
 		Log.d(TAG, "Surface changed! width = " + String.valueOf(width) + ", height = " + String.valueOf(height));
-		if(this.width != width || this.height != height || functions_need_recalculation || windowsettings_need_recalculation)
+		if(GraphRenderer.width != width || GraphRenderer.height != height || functions_need_recalculation || windowsettings_need_recalculation)
 		{
 			GraphActivity.showLoadingDialog();
 			Log.d(TAG, "Updating data...");
-			this.width = width;
-			this.height = height;
+			GraphRenderer.width = width;
+			GraphRenderer.height = height;
 			//tmp_InitWindowSettings(-8, 8, false);
 			//tmp_InitFunctions();
 			

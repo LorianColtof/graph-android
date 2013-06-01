@@ -129,6 +129,7 @@ SharedPreferences.OnSharedPreferenceChangeListener
 		
 		Log.d(GraphActivity.TAG, "Updating " + key);
 		
+		
 		Preference pref = this.getPreferenceScreen().findPreference(key);
 		if(pref instanceof NumberPickerPreference)
 		{
